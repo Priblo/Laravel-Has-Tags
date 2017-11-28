@@ -1,0 +1,40 @@
+{
+	"name": "priblo/laravel-has-tags",
+	"description": "",
+	"license": "MIT",
+	"keywords": ["tag", "tags", "tagging", "laravel", "hashtag", "hashtags", "eloquent"],
+	"authors": [
+        {
+          "name": "Davide Gaido",
+          "email": "davide.0plus1@gmail.com"
+        }
+	],
+	"require": {
+      "php": ">=7.0.0",
+        "illuminate/database": "5.5.*",
+        "illuminate/support": "5.5.*"
+	},
+	"require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "orchestra/testbench": "3.5.*",
+        "orchestra/database": "3.5.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Priblo\\LaravelHasTags\\": "src/"
+		}
+	},
+    "config": {
+      "platform": {
+        "php": "7.0.0"
+      }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "Priblo\\LaravelHasTags\\LaravelServiceProvider"
+        ]
+      }
+    },
+    "minimum-stability": "stable"
+}
