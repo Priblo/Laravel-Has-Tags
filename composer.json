@@ -1,6 +1,6 @@
 {
 	"name": "priblo/laravel-has-tags",
-	"description": "",
+	"description": "Performance centric model tags trait",
 	"license": "MIT",
 	"keywords": ["tag", "tags", "tagging", "laravel", "hashtag", "hashtags", "eloquent"],
 	"authors": [
