@@ -33,7 +33,7 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
      * @param string $type
      * @return null|Tag
      */
-    public function findOneTagBySlugAndType(string $tag_slug, $type = null) : ?Tag
+    public function findOneTagBySlugAndType(string $tag_slug, $type = null)
     {
         return $this->Tag
             ->where(['slug'=> $tag_slug, 'type' => $type])
