@@ -92,7 +92,7 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
     /**
      * Delete all unused tags
      */
-    public function deleteUnusedTags() : void
+    public function deleteUnusedTags()
     {
         $this->Tag
             ->where('count', 0)
