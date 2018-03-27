@@ -99,7 +99,6 @@ trait HasTags
     }
 
     /**
-     * @param array $tags
      * @param string|null $type
      * @return Model
      */
@@ -145,16 +144,4 @@ trait HasTags
         });
     }
 
-    /**
-     * Shortcut for update tagCount + delete unused tags
-     *
-     * @param Collection $collection
-     */
-    private function cleanupTagsTable(Collection $collection) : void
-    {
-        foreach($collection as $Tag) {
-            $this->Decorated->updateTagCount($Tag);
-        }
-        $this->Decorated->deleteUnusedTags();
-    }
 }
