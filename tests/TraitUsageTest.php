@@ -24,13 +24,11 @@ class TraitUsageTest extends TestCase
 
         $this->assertSame(3, $User->tags->count());
         $this->assertSame(3, $User2->tags->count());
-        $this->assertSame(2, Tag::readCountBySlugAndType('tag1'));
 
         $User2->unTag();
 
         $this->assertSame(3, $User->tags->count());
         $this->assertSame(0, $User2->tags->count());
-        $this->assertSame(1, Tag::readCountBySlugAndType('tag1'));
     }
 
     /**
@@ -60,17 +58,11 @@ class TraitUsageTest extends TestCase
         $this->assertSame(4, $User->tagsWithType('hashtag')->count());
         $this->assertSame(10, $User->tags->count());
 
-        $this->assertSame(2, Tag::readCountBySlugAndType('tag1','hashtag'));
-        $this->assertSame(1, Tag::readCountBySlugAndType('tag1', 'tagtag'));
-
         $User->untag('tagtag');
 
         $this->assertSame(0, $User->tagsWithType('tagtag')->count());
         $this->assertSame(4, $User->tagsWithType('hashtag')->count());
         $this->assertSame(4, $User->tags->count());
-
-        $this->assertSame(2, Tag::readCountBySlugAndType('tag1','hashtag'));
-        $this->assertSame(0, Tag::readCountBySlugAndType('tag6','tagtag'));
     }
 
     /**
