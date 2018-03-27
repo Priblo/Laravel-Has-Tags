@@ -5,8 +5,11 @@ namespace Priblo\LaravelHasTags\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 use Priblo\LaravelHasTags\Models\Tag;
 use Priblo\LaravelHasTags\Models\Taggable;
+use Priblo\LaravelHasTags\Models\Related;
+
 use Illuminate\Database\Eloquent\Collection;
 use Priblo\LaravelHasTags\Repositories\Interfaces\HasTagsRepositoryInterface;
 
@@ -50,27 +53,30 @@ trait HasTags
     }
 
     /**
+     * Returns an array containing all related tags and related objects
+     *
      * @param string $tag_slug
      * @param string|null $type
-     * @return array
+     * @return Related[]
      */
-    public static function relatedTags(string $tag_slug, string $type = null) : array
+    public static function getRelatedByTag(string $tag_slug, string $type = null) : array
     {
         $relatedTags = [];
 
-        $modelsCollection = (get_class(new static()))::withAnyTag([$tag_slug], $type)->get();
-        $modelsCollection->each( function(Model $Model) use (&$relatedTags) {
-            $Model->tags->each( function(Model $Model) use (&$relatedTags) {
-                $relatedTags[] = $Model->slug;
+        $modelsCollection = (get_class(new static()))::with('tags')->withAnyTag([$tag_slug], $type)->get();
+
+        $modelsCollection->each( function(Model $Model) use (&$relatedTags, $tag_slug) {
+            $Model->tags->each( function(Tag $Tag) use (&$relatedTags, $tag_slug, $Model) {
+                if($tag_slug !== $Tag->slug) {
+                    if (!isset($relatedTags[$Tag->slug])) {
+                        $relatedTags[$Tag->slug] = new Related($Tag);
+                    }
+                    $relatedTags[$Tag->slug]->addModel($Model);
+                }
             });
         });
 
-        $uniqueRelatedTags = collect($relatedTags)->unique();
-        $uniqueRelatedTagsCleaned = $uniqueRelatedTags->reject(function($value) use ($tag_slug) {
-            return $value === $tag_slug;
-        });
-
-        return $uniqueRelatedTagsCleaned->flatten()->toArray();
+        return $relatedTags;
     }
 
     /**

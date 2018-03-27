@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase;
 use Priblo\LaravelHasTags\Traits\HasTags;
-use Priblo\LaravelHasTags\Models\Tag;
+use Priblo\LaravelHasTags\Models\Related;
 
 /**
  * Class TraitUsageTest
@@ -110,9 +111,10 @@ class TraitUsageTest extends TestCase
         $User4->tag(['tag1', 'tag7'], 'hashtag');
         $User5->tag(['tag1', 'tag8']);
 
-        $this->assertSame(['tag6', 'tag8'], User::relatedTags('tag1'));
-        $this->assertSame(['tag2', 'tag3', 'tag4', 'tag7'], User::relatedTags('tag1', 'hashtag'));
+        $this->assertSame(['tag6', 'tag8'], array_keys(User::getRelatedByTag('tag1')));
+        $this->assertSame(Related::class, get_class(User::getRelatedByTag('tag1')['tag6']));
 
+        $this->assertSame(['tag2', 'tag3', 'tag4', 'tag7'], array_keys(User::getRelatedByTag('tag1', 'hashtag')));
     }
 
     /**
