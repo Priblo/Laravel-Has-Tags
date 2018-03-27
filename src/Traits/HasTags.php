@@ -39,7 +39,7 @@ trait HasTags
     }
 
     /**
-     * @param null $type
+     * @param string|null $type
      * @return Collection
      */
     public function tagsWithType(string $type = null) : Collection
@@ -49,6 +49,29 @@ trait HasTags
         });
     }
 
+    /**
+     * @param string $tag_slug
+     * @param string|null $type
+     * @return array
+     */
+    public static function relatedTags(string $tag_slug, string $type = null) : array
+    {
+        $relatedTags = [];
+
+        $modelsCollection = (get_class(new static()))::withAnyTag([$tag_slug], $type)->get();
+        $modelsCollection->each( function(Model $Model) use (&$relatedTags) {
+            $Model->tags->each( function(Model $Model) use (&$relatedTags) {
+                $relatedTags[] = $Model->slug;
+            });
+        });
+
+        $uniqueRelatedTags = collect($relatedTags)->unique();
+        $uniqueRelatedTagsCleaned = $uniqueRelatedTags->reject(function($value) use ($tag_slug) {
+            return $value === $tag_slug;
+        });
+
+        return $uniqueRelatedTagsCleaned->flatten()->toArray();
+    }
 
     /**
      * @param array $tags

@@ -45,6 +45,7 @@ class TraitUsageTest extends TestCase
 
         $this->assertSame(4, $User->tagsWithType('hashtag')->count());
         $this->assertSame(4, $User->tags->count());
+        $this->assertSame(4, $User2->tagsWithType(null)->count());
 
         $User->tag(['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag5'],'tagtag');
 
@@ -85,8 +86,33 @@ class TraitUsageTest extends TestCase
         $this->assertSame(5, $users->last()->tagsWithType(null)->count());
         $this->assertSame(9, $users->last()->tags->count());
 
-        $users = User::withAnyTag(['tag5'])->get();
+        $users = User::withAnyTag(['tag4'])->get();
         $this->assertSame(1, $users->count() );
+    }
+
+    /**
+     * Test Tags with type
+     */
+    public function test_TraitRelated()
+    {
+        // Related involve using a static method across all taggables, we need to clean the slate before doing any work
+        $this->assertSame(0, User::all()->count());
+
+        $User = $this->createOneUser();
+        $User2 = $this->createOneUser();
+        $User3 = $this->createOneUser();
+        $User4 = $this->createOneUser();
+        $User5 = $this->createOneUser();
+
+        $User->tag(['tag1', 'tag2', 'tag3'],'hashtag');
+        $User2->tag(['tag1', 'tag3', 'tag4'],'hashtag');
+        $User3->tag(['tag1', 'tag6']);
+        $User4->tag(['tag1', 'tag7'], 'hashtag');
+        $User5->tag(['tag1', 'tag8']);
+
+        $this->assertSame(['tag6', 'tag8'], User::relatedTags('tag1'));
+        $this->assertSame(['tag2', 'tag3', 'tag4', 'tag7'], User::relatedTags('tag1', 'hashtag'));
+
     }
 
     /**
