@@ -4,6 +4,7 @@ namespace Priblo\LaravelHasTags\Repositories\Interfaces;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Priblo\LaravelHasTags\Models\Tag;
+use Priblo\LaravelHasTags\Models\Taggable;
 
 /**
  * Interface HasTagsRepositoryInterface
@@ -55,4 +56,11 @@ interface HasTagsRepositoryInterface
      * Delete all unused tags
      */
     public function deleteUnusedTags() : void;
+
+    /**
+     * Deletes a single Taggable model
+     *
+     * @param Taggable $Taggable
+     */
+    public function deleteTaggable(Taggable $Taggable) : void;
 }

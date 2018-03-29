@@ -139,7 +139,7 @@ trait HasTags
         $taggables->each( function (Taggable $Taggable) use ($type) {
             $Tag = $Taggable->tag;
             if($Tag->type === $type) {
-                $Taggable->delete();
+                $this->decorated->deleteTaggable($Taggable);
                 $this->decorated->updateTagCount($Tag);
             }
         });

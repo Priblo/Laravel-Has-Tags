@@ -77,4 +77,9 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
             ->delete();
     }
 
+    public function deleteTaggable(Taggable $Taggable) : void
+    {
+        $Taggable->delete();
+    }
+
 }
