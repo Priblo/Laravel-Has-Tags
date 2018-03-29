@@ -23,14 +23,14 @@ trait HasTags
     /**
      * @var HasTagsRepositoryInterface
      */
-    private $Decorated = null;
+    private $decorated;
 
     /**
      * HasSettings constructor.
      */
     public function __construct()
     {
-        $this->Decorated = resolve(HasTagsRepositoryInterface::class);
+        $this->decorated = resolve(HasTagsRepositoryInterface::class);
     }
 
     /**
@@ -63,7 +63,8 @@ trait HasTags
     {
         $relatedTags = [];
 
-        $modelsCollection = (get_class(new static()))::with('tags')->withAnyTag([$tag_slug], $type)->get();
+        $Model = new static();
+        $modelsCollection = $Model->decorated->findAllTaggedModelsByModelAndSlugAndType($Model, $tag_slug, $type);
 
         $modelsCollection->each( function(Model $Model) use (&$relatedTags, $tag_slug) {
             $Model->tags->each( function(Tag $Tag) use (&$relatedTags, $tag_slug, $Model) {
@@ -94,9 +95,9 @@ trait HasTags
 
         foreach($tags as $tag_name) {
 
-            $Tag = $this->Decorated->findOneTagBySlugAndType(str_slug($tag_name), $type);
+            $Tag = $this->decorated->findOneTagBySlugAndType(str_slug($tag_name), $type);
             if (is_null($Tag)) {
-                $Tag = $this->Decorated->createOneTagFromStringForType($tag_name, $type);
+                $Tag = $this->decorated->createOneTagFromStringForType($tag_name, $type);
             }
 
             $created_tags->add($Tag);
@@ -105,7 +106,7 @@ trait HasTags
         $this->tags()->syncWithoutDetaching( $created_tags->pluck('id')->toArray() );
 
         foreach($created_tags as $Tag) {
-            $this->Decorated->updateTagCount($Tag);
+            $this->decorated->updateTagCount($Tag);
         }
 
         $this->load('tags');
@@ -133,17 +134,17 @@ trait HasTags
      */
     public function unTag(string $type = null) : Model
     {
-        $taggables = $this->Decorated->findAllTaggablesByModel($this);
+        $taggables = $this->decorated->findAllTaggablesByModel($this);
 
         $taggables->each( function (Taggable $Taggable) use ($type) {
             $Tag = $Taggable->tag;
             if($Tag->type === $type) {
                 $Taggable->delete();
-                $this->Decorated->updateTagCount($Tag);
+                $this->decorated->updateTagCount($Tag);
             }
         });
 
-        $this->Decorated->deleteUnusedTags();
+        $this->decorated->deleteUnusedTags();
 
         $this->load('tags');
         return $this;
@@ -163,7 +164,7 @@ trait HasTags
 
         $tags_collection = new Collection();
         foreach($tags as $tag_name) {
-            $Tag = $this->Decorated->findOneTagBySlugAndType(str_slug($tag_name), $type);
+            $Tag = $this->decorated->findOneTagBySlugAndType(str_slug($tag_name), $type);
             $tags_collection->add($Tag);
         }
 

@@ -27,13 +27,24 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
     }
 
     /**
+     * @param Model $Model
+     * @param string $tag_slug
+     * @param string|null $type
+     * @return Collection
+     */
+    public function findAllTaggedModelsByModelAndSlugAndType(Model $Model, string $tag_slug, string $type = null) : Collection
+    {
+        return (get_class($Model))::with('tags')->withAnyTag([$tag_slug], $type)->get();
+    }
+
+    /**
      * Find one tag by slug and type
      *
      * @param string $tag_slug
      * @param string $type
      * @return null|Tag
      */
-    public function findOneTagBySlugAndType(string $tag_slug, $type = null)
+    public function findOneTagBySlugAndType(string $tag_slug, $type = null) : ?Tag
     {
         return $this->Tag
             ->where(['slug'=> $tag_slug, 'type' => $type])
@@ -92,7 +103,7 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
     /**
      * Delete all unused tags
      */
-    public function deleteUnusedTags()
+    public function deleteUnusedTags() : void
     {
         $this->Tag
             ->where('count', 0)
