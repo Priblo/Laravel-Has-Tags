@@ -129,6 +129,11 @@ trait HasTags
     }
 
     /**
+     * Removes all tags of the specified type
+     * note: NULL is considered a type
+     *
+     * TODO: Refactor, too convoluted, should be part of the Interface to merge with unTagAll()
+     *
      * @param string|null $type
      * @return Model
      */
@@ -142,6 +147,26 @@ trait HasTags
                 $this->decorated->deleteTaggable($Taggable);
                 $this->decorated->updateTagCount($Tag);
             }
+        });
+
+        $this->decorated->deleteUnusedTags();
+
+        $this->load('tags');
+        return $this;
+    }
+
+    /**
+     * Removes all tags associated to a model irregardless of type
+     *
+     * @return Model
+     */
+    public function unTagAll() : Model
+    {
+        $taggables = $this->decorated->findAllTaggablesByModel($this);
+
+        $taggables->each( function (Taggable $Taggable) {
+            $this->decorated->deleteTaggable($Taggable);
+            $this->decorated->updateTagCount($Taggable->Tag);
         });
 
         $this->decorated->deleteUnusedTags();

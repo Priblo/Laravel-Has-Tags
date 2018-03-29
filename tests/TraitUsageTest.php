@@ -41,12 +41,9 @@ class TraitUsageTest extends TestCase
         $User2 = $this->createOneUser();
 
         $User->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4'],'hashtag');
-        $User2->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4'],'hashtag');
-        $User2->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4']);
 
         $this->assertSame(4, $User->tagsWithType('hashtag')->count());
         $this->assertSame(4, $User->tags->count());
-        $this->assertSame(4, $User2->tagsWithType(null)->count());
 
         $User->tag(['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag5'],'tagtag');
 
@@ -65,6 +62,28 @@ class TraitUsageTest extends TestCase
         $this->assertSame(0, $User->tagsWithType('tagtag')->count());
         $this->assertSame(4, $User->tagsWithType('hashtag')->count());
         $this->assertSame(4, $User->tags->count());
+
+        $User2->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4', 'tag5'],'hashtag');
+        $User2->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4']);
+
+        $this->assertSame(5, $User2->tagsWithType('hashtag')->count());
+        $this->assertSame(9, $User2->tags->count());
+        $this->assertSame(4, $User2->tagsWithType(null)->count());
+
+        $User2->untag();
+
+        $this->assertSame(5, $User2->tagsWithType('hashtag')->count());
+        $this->assertSame(0, $User2->tagsWithType(null)->count());
+
+        $User2->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4', 'tag5'],'hashtag');
+        $User2->tag(['tag1', 'tag2', 'tag3', 'tag1', 'tag1', 'tag4']);
+
+        $this->assertSame(9, $User2->tags->count());
+
+        $User2->unTagAll();
+
+        $this->assertSame(0, $User2->tagsWithType('hashtag')->count());
+        $this->assertSame(0, $User2->tagsWithType(null)->count());
     }
 
     /**
