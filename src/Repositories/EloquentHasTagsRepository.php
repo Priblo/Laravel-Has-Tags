@@ -26,25 +26,12 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
         $this->Taggable = $Taggable;
     }
 
-    /**
-     * @param Model $Model
-     * @param string $tag_slug
-     * @param string|null $type
-     * @return Collection
-     */
     public function findAllTaggedModelsByModelAndSlugAndType(Model $Model, string $tag_slug, string $type = null) : Collection
     {
         return (get_class($Model))::with('tags')->withAnyTag([$tag_slug], $type)->get();
     }
 
-    /**
-     * Find one tag by slug and type
-     *
-     * @param string $tag_slug
-     * @param string $type
-     * @return null|Tag
-     */
-    public function findOneTagBySlugAndType(string $tag_slug, $type = null) : ?Tag
+    public function findOneTagBySlugAndType(string $tag_slug, string $type = null) : ?Tag
     {
         return $this->Tag
             ->where(['slug'=> $tag_slug, 'type' => $type])
@@ -52,14 +39,7 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
             ;
     }
 
-    /**
-     * Create a new Tag
-     *
-     * @param string $tag_name
-     * @param string $type
-     * @return Tag
-     */
-    public function createOneTagFromStringForType(string $tag_name, $type = null) : Tag
+    public function createOneTagFromStringForType(string $tag_name, string $type = null) : Tag
     {
         $Tag = new Tag();
         $Tag->type = $type;
@@ -71,12 +51,6 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
         return $Tag;
     }
 
-    /**
-     * Updates an individual tag counter
-     *
-     * @param Tag $Tag
-     * @return Tag
-     */
     public function updateTagCount(Tag $Tag) : Tag
     {
         $count = $this->Taggable
@@ -89,10 +63,6 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
         return $Tag;
     }
 
-    /**
-     * @param Model $Model
-     * @return Collection
-     */
     public function findAllTaggablesByModel(Model $Model) : Collection
     {
         return $this->Taggable
@@ -100,9 +70,6 @@ class EloquentHasTagsRepository implements HasTagsRepositoryInterface {
             ->get();
     }
 
-    /**
-     * Delete all unused tags
-     */
     public function deleteUnusedTags() : void
     {
         $this->Tag

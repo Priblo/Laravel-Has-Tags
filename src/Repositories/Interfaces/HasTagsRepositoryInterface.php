@@ -11,15 +11,48 @@ use Priblo\LaravelHasTags\Models\Tag;
  */
 interface HasTagsRepositoryInterface
 {
+    /**
+     * @param Model $Model
+     * @param string $tag_slug
+     * @param string|null $type
+     * @return Collection
+     */
     public function findAllTaggedModelsByModelAndSlugAndType(Model $Model, string $tag_slug, string $type = null) : Collection;
 
-    public function findOneTagBySlugAndType(string $tag_slug, $type = null) : ?Tag;
+    /**
+     * Find one tag by slug and type
+     *
+     * @param string $tag_slug
+     * @param string $type
+     * @return null|Tag
+     */
+    public function findOneTagBySlugAndType(string $tag_slug, string $type = null) : ?Tag;
 
-    public function createOneTagFromStringForType(string $tag_name, $type = null) : Tag;
+    /**
+     * Create a new Tag
+     *
+     * @param string $tag_name
+     * @param string $type
+     * @return Tag
+     */
+    public function createOneTagFromStringForType(string $tag_name, string $type = null) : Tag;
 
+    /**
+     * Updates an individual tag counter
+     *
+     * @param Tag $Tag
+     * @return Tag
+     */
     public function updateTagCount(Tag $Tag) : Tag;
 
+    /**
+     * @param Model $Model
+     * @return Collection
+     */
     public function findAllTaggablesByModel(Model $Model) : Collection;
 
+    /**
+     * Delete all unused tags
+     */
     public function deleteUnusedTags() : void;
 }
